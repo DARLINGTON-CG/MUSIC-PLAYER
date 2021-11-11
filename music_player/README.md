@@ -1,3 +1,2 @@
-# MUSIC PLAYER
-
-A local media player to play audio files
+# Gramophone Music Player
+An amazing audio media player with beautiful interface
