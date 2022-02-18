@@ -1,20 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class WelcomePage extends StatefulWidget {
+  final double screenHeight;
+
+  const WelcomePage({Key? key, required this.screenHeight}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _WelcomePageState createState() => _WelcomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin {
+  late AnimationController _splashController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _splashController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+
+    _animation = Tween<double>(
+      begin: 0.0,
+      end: widget.screenHeight,
+    ).animate(CurvedAnimation(parent: _splashController, curve: Curves.easeIn));
+  }
+
+  @override
+  void dispose() {
+    _splashController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //backgroundColor:Colors.green,
-        body: SafeArea(
-            child: Stack(
+      backgroundColor: Colors.amber,
+        body: Stack(
       children: [
         Positioned(
           top: MediaQuery.of(context).size.height / 8,
@@ -52,7 +74,12 @@ class _HomePageState extends State<HomePage> {
             bottom: MediaQuery.of(context).size.height / 9.3,
             right: MediaQuery.of(context).size.width / 9,
             child: IconButton(
-                onPressed: null,
+                onPressed: () async {
+                  await _splashController.forward();
+                  if (_splashController.isCompleted) {
+                    Navigator.of(context).pushReplacementNamed("/home_page");
+                  }
+                },
                 icon: Icon(
                   Icons.play_circle_rounded,
                   size: 65,
@@ -64,8 +91,24 @@ class _HomePageState extends State<HomePage> {
               width: MediaQuery.of(context).size.width,
               height: 600,
               child: const RiveAnimation.asset("assets/rive/speaker_rive.riv"),
-            ))
+            )),
+        AnimatedBuilder(
+            animation: _animation,
+            builder: (_, Widget? child) {
+              return Positioned(
+                  bottom: (MediaQuery.of(context).size.height / 9.3) -
+                      _animation.value, //-_animation.value,//-_animation.value,
+                  right: (MediaQuery.of(context).size.width / 9) -
+                      _animation.value, //-_animation.value,//-_animation.value,
+                  child: Container(
+                      width: 2 * _animation.value,
+                      height: 2 * _animation.value,
+                      decoration: const BoxDecoration(
+                        color: Colors.amber,
+                        shape: BoxShape.circle,
+                      )));
+            }),
       ],
-    )));
+    ));
   }
 }

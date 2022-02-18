@@ -7,6 +7,8 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
+    statusBarBrightness: Brightness.dark,
+    statusBarIconBrightness: Brightness.dark,
   ));
   runApp(MyApp(
     applicationRoutes: AppRouter(),
@@ -15,6 +17,8 @@ void main() {
 
 class MyApp extends StatelessWidget {
   final AppRouter applicationRoutes;
+  
+
 
   const MyApp({Key? key, required this.applicationRoutes}) : super(key: key);
   @override
@@ -27,3 +31,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+/*
+
+*/
